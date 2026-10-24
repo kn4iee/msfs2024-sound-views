@@ -6,13 +6,11 @@ the iFly 737 MAX 8 and the TFDi MD-11 and MD-11F.
 
 ## Guides
 
-Read the guides online:
+The guides are HTML files in this repo. Download the ZIP below, unzip it, and open them in any web browser:
 
-- [1 - What each view is](https://kn4iee.github.io/msfs2024-sound-views/1%20-%20What%20each%20view%20is.html): what each key shows, how to install, and every aircraft's views. Start here.
-- [2 - How to build sound views from scratch](https://kn4iee.github.io/msfs2024-sound-views/2%20-%20How%20to%20build%20sound%20views%20from%20scratch.html): the full method, for building views like these.
-- [3 - Changelog](https://kn4iee.github.io/msfs2024-sound-views/3%20-%20Changelog.html): what changed since the first version, and why.
-
-The same guides are in the download as HTML files, so they also open offline.
+- [1 - What each view is.html](1%20-%20What%20each%20view%20is.html): what each key shows, how to install, and every aircraft's views. Start here.
+- [2 - How to build sound views from scratch.html](2%20-%20How%20to%20build%20sound%20views%20from%20scratch.html): the full method, for building views like these.
+- [3 - Changelog.html](3%20-%20Changelog.html): what changed since the first version, and why.
 
 ## Download
 
