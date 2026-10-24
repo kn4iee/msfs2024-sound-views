@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Building sound-tuned camera views from scratch</title>
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; line-height: 1.55; max-width: 60rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1b; background: #fff; }
+  table { border-collapse: collapse; margin: 0.8rem 0 1.4rem; width: 100%; }
+  th, td { border: 1px solid #999; padding: 0.35rem 0.6rem; text-align: left; vertical-align: top; }
+  th { background: #eee; }
+  caption { text-align: left; font-weight: bold; padding-bottom: 0.3rem; }
+  code { background: #f2f2f2; padding: 0 0.2rem; }
+  h2 { margin-top: 2.2rem; border-bottom: 1px solid #ccc; }
+</style>
+</head>
+<body>
+<main>
+<h1>Building sound-tuned camera views from scratch</h1>
+<p>This is the full method used to give PMDG 777 and 737, Fenix A319, A320 and A321, FlyByWire A32NX and iFly 737 MAX 8 aircraft in Microsoft Flight Simulator 2024 a set of custom cabin views chosen for how they sound. It is written so the method can be repeated on any airliner. What changed after the first build, and why, is in <code>3 - Changelog.html</code>.</p>
+
+<h2 id="idea">1. The idea</h2>
+<p>In MSFS the camera is the listener. Where the camera sits and which way it faces decides how loud each sound is and which ear it lands in. So a view built for sound is a seat: put the camera at a cabin window close to the part that makes the noise, facing the way a passenger would look at it.</p>
+<p>Every aircraft gets the same layout, so muscle memory carries across fleets:</p>
+<table>
+<caption>The layout</caption>
+<thead><tr><th scope="col">Key</th><th scope="col">View</th><th scope="col">Aimed at</th></tr></thead>
+<tbody>
+<tr><td>Alt+1 (left), Alt+5 (right)</td><td>Engine front</td><td>A window seat a few rows in front of the engine intake, 50 to 60 degrees off the engine's forward axis, looking back into it: fan and buzzsaw noise.</td></tr>
+<tr><td>Alt+2 (left), Alt+6 (right)</td><td>Over-wing</td><td>Just behind the wing root's leading edge: slats, the engine from close by, packs and hydraulics under the wing box.</td></tr>
+<tr><td>Alt+3 (left), Alt+7 (right)</td><td>Wing</td><td>Over the middle of the wing: flaps, main gear and the hydraulic bay.</td></tr>
+<tr><td>Alt+4 (left), Alt+8 (right)</td><td>Behind the wing</td><td>1.5 to 2.5 metres behind the wing root's trailing edge, looking forward at it: exhaust roar where the sound set models it.</td></tr>
+<tr><td>Alt+9</td><td>Pilot seat</td><td>The aircraft's own pilot view (keep the existing one).</td></tr>
+<tr><td>Alt+0</td><td>Windshield GoPro</td><td>12 cm inside the captain's front windshield at eye height, 25 cm left of centre, pitched 7.6 degrees down.</td></tr>
+</tbody>
+</table>
+
+<h2 id="tools">2. Requirements</h2>
+<ul>
+<li>MSFS 2024 with the aircraft installed. Default key bindings: <kbd>Alt+0</kbd> to <kbd>Alt+9</kbd> load a custom camera, <kbd>Ctrl+Alt+0</kbd> to <kbd>Ctrl+Alt+9</kbd> save one.</li>
+<li>Python 3. Everything here uses only the standard library: reading glTF files is JSON plus binary buffers.</li>
+<li>Optionally the reference scripts in this zip (folder <code>Reference scripts</code>). They were written for this PC, so their paths are hard-coded, but they show every step.</li>
+</ul>
+
+<h2 id="files">3. Find the view files</h2>
+<p>Custom views live in the sim's user folder, not in the aircraft package. On a Steam install that is <code>%APPDATA%\Microsoft Flight Simulator 2024\SimObjects\Airplanes\</code>.</p>
+<ul>
+<li>Modular MSFS 2024 aircraft (PMDG, Fenix): one file per preset, at <code>&lt;aircraft folder&gt;\presets\&lt;developer&gt;\&lt;preset&gt;\config\cameras.cfg</code>.</li>
+<li>Older single-model aircraft (FlyByWire, iFly): one file per aircraft folder, at <code>&lt;aircraft folder&gt;\cameras.CFG</code>.</li>
+<li>The sim writes the file when <kbd>Ctrl+Alt+N</kbd> is pressed and reads it only when the aircraft loads. Edit files only while that aircraft is not loaded, and reload it to see changes.</li>
+<li>Before replacing anything, read the existing file. Existing views may be worth keeping; copy the file first if so.</li>
+</ul>
+
+<h2 id="format">4. The file format</h2>
+<p>The file is a <code>[VERSION]</code> header followed by <code>[CAMERADEFINITION.N]</code> blocks with Windows (CRLF) line endings. The fields that matter:</p>
+<table>
+<caption>Camera block fields</caption>
+<thead><tr><th scope="col">Field</th><th scope="col">Meaning</th></tr></thead>
+<tbody>
+<tr><td><code>Title</code></td><td>The slot: "0" to "9". Other titles (such as "Pilot") are not Alt slots; leave them alone.</td></tr>
+<tr><td><code>InitialXyz</code></td><td>Position in metres relative to the aircraft's eyepoint: x right, y up, z forward.</td></tr>
+<tr><td><code>InitialPbh</code></td><td>Pitch, bank, heading in degrees. Negative pitch looks down; negative heading looks left; 0 is straight ahead, 90 is square out to the right, 120 is 30 degrees behind square.</td></tr>
+<tr><td><code>InitialZoom</code></td><td>Field of view. 0.354 was used for cabin views, 2.577 for the GoPro. Zoom 0.44 shows about 84 degrees across a 16:9 screen; tan(half-angle) scales with zoom to the power 0.289.</td></tr>
+<tr><td><code>Category</code>, <code>SubCategory</code></td><td><code>"Cockpit"</code> and <code>"Custom"</code>. Cockpit-category cameras count as inside views for sound.</td></tr>
+</tbody>
+</table>
+<p>Copy all the other fields from an existing block (Guid, Origin "Virtual Cockpit", ClipMode and so on). Give each new block its own Guid.</p>
+
+<h2 id="frame">5. Find the eyepoint and the model frame</h2>
+<ol>
+<li>Read <code>eyepoint = longitudinal, lateral, vertical</code> (feet from the reference datum) from the aircraft's <code>cameras.cfg</code> or <code>aircraft.cfg</code>. Camera positions are relative to this point.</li>
+<li>Read <code>reference_datum_position</code> in <code>flight_model.cfg</code>. When it is 0,0,0 (true for every aircraft here), the datum is the 3D model's origin.</li>
+<li>In the glTF model files, +x is the aircraft's left, +y is up and +z is forward. So model position = (-(x + eye lateral), y + eye vertical, z + eye longitudinal), with the eyepoint converted to metres.</li>
+<li>Do not assume the eyepoint is the pilot's head. The Fenix eyepoint sits 2.5 m ahead of its pilot camera. Take the pilot's real position from the aircraft's own pilot camera or from an existing pilot view.</li>
+</ol>
+
+<h2 id="assemble">6. Assemble the model</h2>
+<ul>
+<li>Modular aircraft: start at the preset's <code>config\attached_objects.cfg</code> and follow every <code>[SIM_ATTACHMENT.N]</code> recursively, for the interior and exterior separately. Each part's <code>attachment_file</code> is a model XML listing its LODs.</li>
+<li>Place each part at its <code>attach_to_node</code>: that node's world matrix comes from parts loaded earlier, times any <code>attach_offset</code>. Parent parts load first.</li>
+<li>Model XMLs can use <code>&lt;LODS Template="..."&gt;</code> and per-LOD <code>&lt;MergeModel&gt;</code> entries (the Fenix wings get their sharklets or fences this way). Follow both, or whole parts go missing.</li>
+<li>One aircraft can be split over several packages (Fenix A319/A321 parts reference A320-package parts). Resolve every path across all of the aircraft's packages, as the sim does.</li>
+<li>Single-model aircraft: <code>model\model.cfg</code> lists <code>normal=</code> (exterior) and <code>interior=</code> XMLs; each XML points to its glTF.</li>
+<li>Use LOD0 for cabin parts: lower LODs have no window holes. Seats can use a coarse LOD; they only need to block.</li>
+<li>MSFS-optimized glTFs share vertex buffers between primitives. Honour each primitive's <code>ASOBO_primitive</code> BaseVertexIndex, StartIndex and PrimitiveCount, or triangles get duplicated.</li>
+<li>Skip geometry the sim doesn't draw or that isn't normally there: invisible, collision and occluder materials, glass, decals, mouse-click shapes, and helper meshes (Fenix <code>Skel_*</code>). Also skip ground props such as engine covers, safety cones and chocks.</li>
+</ul>
+
+<h2 id="measure">7. Measure the airframe</h2>
+<ul>
+<li><strong>Windows:</strong> find the cabin window glass meshes. Group their vertices along the fuselage to get one centre per window, plus the glass's distance from the centreline and the window's height. Make sure the mesh is the glass: iFly shades are parked above the windows when open, which gave a height 30 cm too high.</li>
+<li><strong>Engines:</strong> the nacelle's forward-most point is the intake lip. Exclude engine covers and cones in front of the engine. Also measure the fan face (the front of the fan-blade mesh) and the engine axis: its distance out from the centreline and its height. The engine-front rule in step 9 needs all three.</li>
+<li><strong>Wing:</strong> take wing vertices close to the fuselage. Their forward-most point is the root leading edge; their rearmost is the root trailing edge.</li>
+<li><strong>Main gear:</strong> the gear attach point or bay.</li>
+<li><strong>Front windshield:</strong> names can mislead. On the Fenix, <code>Fuselage_Windshield_Window_L</code> is the side window; the front pane is <code>Misc_Windshield_Captain</code> in the cockpit model. Measure it by casting a ray straight ahead from the pilot's eye, treating glass as solid.</li>
+</ul>
+
+<h2 id="sounds">8. Find the sound sources</h2>
+<ul>
+<li>Sounds are defined in <code>sound.xml</code> files: one for the aircraft, plus one per part on modular aircraft (Fenix: engines, fuselage, wings, gear, cabin, cockpit). Read them; never edit them, and leave third-party sound packs untouched.</li>
+<li>Each <code>&lt;Sound&gt;</code> is anchored by <code>NodeName</code> (a node in that part's model), <code>ReferencePointName</code> or nothing, plus optional PositionX/Y/Z offsets. Convert each anchor to the model frame to see where it plays.</li>
+<li>The <code>ViewPoint</code> attribute decides what is heard from the cabin. Cabin views are inside views: they play <code>All</code> and <code>Inside</code> sounds, never <code>Outside</code> ones such as exterior wind, brakes or gear-door loops. Place views for the sounds that can actually be heard.</li>
+<li>Directional layers (an engine's front intake sound versus its rear exhaust roar) may be set in the sound.xml (ConeHeading) or hidden inside the Wwise package. The behind-the-wing view only pays off when the set has rear layers. On the Fenix all engine sound comes from one point mid-engine, so that view is the quiet seat.</li>
+<li>A sound with no NodeName at all plays at the aircraft's datum (MSFS SDK). On the iFly the hydraulic and flap sounds have none, so they play over the wing.</li>
+<li>Don't present guesses about the sim as fact. Where a sound plays when its NodeName is set but missing from the model was never verified; listening in the sim is the final test.</li>
+<li>Write the anchors down per aircraft. On this project:
+  <ul>
+  <li>Fenix: one engine point mid-nacelle; PTU and packs at the datum, over the wing box; slats beside the over-wing view; flaps and main gear under the wing view.</li>
+  <li>FlyByWire: each engine at its fan, with separate front and rear layers. The PTU and electric pumps sit 1.8 m behind the datum, the slats on the right side only, and the flap motor beside the left behind-the-wing seat.</li>
+  <li>iFly: each engine at its fan, with front and rear layers.</li>
+  <li>Boris Audio Works 737: electric hydraulic pumps under the wing views; flaps with no node, so they play at the datum.</li>
+  </ul></li>
+</ul>
+
+<h2 id="research">8a. Check the layout against real aircraft</h2>
+<p>The sound files say where each add-on plays a sound. Published measurements say where a real passenger hears it. Use both:</p>
+<ul>
+<li><strong>Fan and buzzsaw:</strong> radiate forward out of the intake. Fan tones are strongest 20 to 40 degrees off the engine's forward axis and buzzsaw at 50 to 60; fan tones are about 14 dB weaker at 90 degrees, beside the engine (NASA TM X-71763, Heidmann). Boeing and Rolls-Royce measured buzzsaw in a 777's forward cabin.</li>
+<li><strong>Jet roar:</strong> strongest 20 to 40 degrees off the exhaust axis, in the rear cabin: about rows 20 to 28 of a 180-seat A320 (DLR flight tests, AIAA 2013-2030). The add-ons here anchor the roar at the engine itself, so a view just behind the wing already sits in its rear sound.</li>
+<li><strong>Hydraulic pumps:</strong> in or beside the main gear bay. That's the A320's green system and PTU (NTSB DCA12IA096), the 737's pump B in the right wheel well (FAA AD 99-26-21), and at least one 777 electric pump in the main gear wheel well (FAA).</li>
+<li><strong>Window seats</strong> measure about 4 dB louder than middle or aisle seats (A321 cabin, Canadian Acoustics 2006).</li>
+<li><strong>Check the model against the manufacturer's airport-planning documents</strong> (Airbus Aircraft Characteristics, Boeing ACAPs). Here they agreed to about 0.1 m on the Fenix and 0.4 m on the PMDG and iFly models, for example the distance from the intake to the first overwing exit.</li>
+</ul>
+
+<h2 id="targets">9. Choose a target for each slot</h2>
+<table>
+<caption>Starting targets (fore/aft positions are relative to the airframe features measured above)</caption>
+<thead><tr><th scope="col">View</th><th scope="col">Where</th><th scope="col">Heading from the nose</th><th scope="col">Pitch</th></tr></thead>
+<tbody>
+<tr><td>Engine front</td><td>50 to 60 degrees off the engine's forward axis, measured from the inlet lip and including the height difference. That is about 2.2 to 3.3 m ahead of the intake on a narrowbody and about 4.8 m on a 777. Sit 8 to 14 cm from the glass.</td><td>About 119 to 138 degrees, aimed between the lip and the fan</td><td>21 to 28 degrees down</td></tr>
+<tr><td>Over-wing</td><td>About 1 m behind the wing root's leading edge</td><td>90 to 100 degrees</td><td>14 degrees down</td></tr>
+<tr><td>Wing</td><td>Over the flaps and main gear (mid-chord at the root)</td><td>75 to 85 degrees</td><td>13 degrees down</td></tr>
+<tr><td>Behind the wing</td><td>1.5 to 2.5 m behind the root trailing edge</td><td>60 to 76 degrees</td><td>12 degrees down</td></tr>
+</tbody>
+</table>
+<p>Use these as starting points only: the search in step 11 picks the actual window, distance from the glass, heading and pitch.</p>
+<p>Seat height is the window centre plus about 3 cm. Cabin zoom is 0.354. For Alt+9 keep the aircraft's existing pilot view. For Alt+0 put the camera 12 cm inside the front windshield found in step 7.</p>
+
+<h2 id="check">10. Check views offline with ray casting</h2>
+<p>Render each view as a small grid of rays (96 by 54 is plenty) through the assembled interior and exterior, and label what each ray hits first: sky, ground, airframe, engine, cabin, seat, cockpit, a back face, or a surface closer than 7 cm. Report, for the centre half of the frame:</p>
+<ul>
+<li>how much is outside (sky, ground, airframe, engine);</li>
+<li>how much is wing or engine, and engine alone;</li>
+<li>how much is "bad": rays hitting a back face or a surface closer than 7 cm. Either means the camera is inside something.</li>
+</ul>
+<p>Rules that made the checker match the sim:</p>
+<ul>
+<li>Asobo and PMDG models use clockwise front faces. For interior geometry a back-face hit means the camera is inside it. For the exterior, cull back faces, because from inside, the view looks out through the hull.</li>
+<li>Glass, decals and invisible materials don't block. Window shades do if they are static and closed (PMDG 777-300ER, beside door 3).</li>
+<li>Exterior meshes that face into the cabin are walls, not airframe. The FlyByWire's <code>HublotIn</code> window lining was first counted as airframe, so blocked views scored "100% wing".</li>
+<li>Alpha-masked skins cut their window holes with a texture a ray-caster can't see (iFly <code>Max8_Fuselage*</code> and <code>Max8200_Fuselage*</code>). Treat them as see-through and let the side-wall panels behind them bound the view.</li>
+<li>Validate first. Before trusting the checker on an aircraft, run it on views known to work in the sim (existing views are ideal) and look at the rendered images. On the Fenix this caught three loader bugs before any file was written.</li>
+</ul>
+
+<h2 id="search">11. Search for the best seat</h2>
+<ol>
+<li>For each slot, take the 4 or 5 windows nearest the target and 4 or 5 distances in from the glass (10 to 45 cm on narrowbodies).</li>
+<li>Score each candidate at low resolution: outside + 0.5 &times; wing/engine &minus; 3 &times; bad &minus; 12 &times; metres from the target &minus; a small penalty per degree of heading change. For the engine-front view, weight the engine itself much more than general outside. Reject anything with more than 5% bad or a blocked centre.</li>
+<li>Refine the best few with heading steps of 8 to 15 degrees and, for the engine view, a 6-degree pitch step.</li>
+<li>Choose the engine-front window by angle, not by how much engine it shows. Take the line from the inlet lip to the camera, including the height difference, and measure its angle from the engine's forward axis. Pick a window at 50 to 60 degrees, then aim at the intake and require a clear view, with at least 10% engine in the middle of the frame. A score that rewards engine pixels pulls the seat back beside the intake, because the engine looks bigger there. Why 50 to 60: fan tones peak 20 to 40 degrees off the inlet axis and buzzsaw at 50 to 60, and both fade toward 90 (NASA TM X-71763). Further forward than about 50 degrees, a cabin window no longer shows the engine.</li>
+<li>Leave the behind-the-wing view just behind the trailing edge. Real jet roar peaks a few rows further back, 20 to 40 degrees off the exhaust axis (DLR, AIAA 2013-2030). The add-ons checked here (Fenix, FlyByWire, iFly) anchor their engine sounds at the engine itself, at the fan or mid-nacelle, so moving the view back only adds distance.</li>
+<li>Run one search per cabin layout. Engine-type and wingtip twins get the same views; spot-check a twin.</li>
+<li>When the model is symmetric but the checker sees one side differently, mirror the good side. The FlyByWire's right wing faces the other way, so culling dropped it.</li>
+<li>A full Fenix cabin is about 7 million triangles and 6 to 7 GB in Python. Run at most two searches next to a running sim.</li>
+</ol>
+
+<h2 id="write">12. Write the files</h2>
+<ul>
+<li>Build the file with slots in the order 0, 9, 1, 2 ... 8, then any extra cameras the old file had (the Fenix A320 presets keep a camera titled "Pilot").</li>
+<li>Write with CRLF line endings and give each block a new Guid.</li>
+<li>Read every file back: block count, line endings, values.</li>
+<li>When fixing one view later, rewrite only that block's InitialXyz and InitialPbh and leave the rest byte-for-byte.</li>
+<li>Write the same views to every preset that shares the cabin: engine variants (Fenix CFM and IAE, 777 PW, GE and RR), wingtip variants (Fenix SL and WF, 737 BW and SSW), and a freighter that copies a passenger model. Then compare every slot across them.</li>
+<li>Keep the previous values of every moved view, as data, so a view can be put back if the old one is preferred.</li>
+</ul>
+
+<h2 id="seats">12a. Name the seats (optional)</h2>
+<p>To describe each view as a passenger seat (for example 12A):</p>
+<ol>
+<li>Load only the cabin's seat models: every class, including first-class seats with their own names, but not invisible click targets.</li>
+<li>Take the vertices of window seats inboard of the cameras at upper seat-back height. Gather them from both sides of the cabin together, so a row counts once even where one side is missing a seat.</li>
+<li>Group them along the cabin with a 15 cm gap rule. Each group is one row; number them from the front.</li>
+<li>A camera belongs to the row whose seat back is just behind it. Left window seats are A. Right window seats are F on narrowbodies; on widebodies the right letter follows the seats abreast, skipping I.</li>
+<li>Check the total row count against the cabin's seat count, and say plainly that real airline seat maps may skip row 13.</li>
+</ol>
+<p>Freighters and VIP cabins have no numbered rows. An aircraft with no cabin model can borrow the rows of a sibling with the same airframe; the FlyByWire used the Fenix A320's.</p>
+
+<h2 id="verify">13. Verify in the sim</h2>
+<ol>
+<li>Load the aircraft. Views are read only at load, so reload after any change.</li>
+<li>Click the scenery through the windshield (not near the top edge, which opens the toolbar) so the sim has keyboard focus.</li>
+<li>Press <kbd>Alt+1</kbd> through <kbd>Alt+0</kbd>, waiting about 6 seconds after each for the camera to settle.</li>
+<li>For each cabin view, check:
+  <ul>
+  <li>the window frame or reveal is around the edge;</li>
+  <li>the intended part is in view;</li>
+  <li>no wall, seat or lining blocks it.</li>
+  </ul>
+Night is fine for this.</li>
+<li>Never press <kbd>Ctrl+Alt+N</kbd> while checking: it overwrites that slot with the current camera.</li>
+<li>Check at least one aircraft per model family in the sim, plus any view that had to move (next to doors, unusual cabins).</li>
+<li>To fine-tune a view by hand, load it, then use the cockpit camera keys. On this PC, Alt+Up and Alt+Down slide forward and back along the view direction, Left and Right slide sideways, and Shift+arrows turn the view. A tap moves a few centimetres or turns a few degrees, and the step varies, so count taps but trust the saved file. A camera facing the window moves toward the glass with Alt+Up. When it looks right, press <kbd>Ctrl+Alt+N</kbd> on purpose to save it, then read the file back. The sim rewrites the whole file with every slot it has loaded.</li>
+<li>Lessons from hand-tuning:
+  <ul>
+  <li><strong>Raise the camera to see further down and back through a window.</strong> To see further aft, move the eye forward, up and closer to the glass. Raising alone (Up arrow) was what worked on the 777 engine-front views.</li>
+  <li><strong>Alt+Up and Alt+Down follow the view's tilt.</strong> With the camera looking down, Alt+Up also lowers it, which can hide the intended target.</li>
+  <li><strong>Slide steps aren't equal.</strong> Repeated taps and single taps moved different amounts. If a move makes things worse, reload the view and repeat the sequence that worked, then save.</li>
+  <li><strong>Pressing the key of the active view returns to the cockpit.</strong> To reload a view, press another view's key first.</li>
+  <li><strong><kbd>Ctrl+Alt+N</kbd> writes only the loaded preset's file.</strong> Copy the changed blocks to the sibling presets by hand, then compare every slot.</li>
+  <li><strong>Slides stop at cabin furniture.</strong> The camera has a small collision radius, so a long move along the cabin can stall against a seat back. For a long move, start from the nearest view at the right point along the cabin, turn the camera to face the direction of travel, and level it. Then hold the slide key; about 0.85 m per second of hold was typical. Save and read the file after each step, then set the final angle last. A held look key turned about 74 degrees per second, and a single tap about 4 degrees.</li>
+  <li><strong>Overlays can swallow keys.</strong> Pop-up add-on messages sometimes took a keypress, so a view didn't load or a save landed on the wrong camera. Confirm each step by reading the file back, not just by watching the screen.</li>
+  <li><strong>Reload after editing files while the aircraft is loaded.</strong> Until the reload, the sim holds the old views in memory, and any save writes them back over the edited file.</li>
+  </ul></li>
+</ol>
+
+<h2 id="pitfalls">14. Pitfalls found on this project</h2>
+<table>
+<caption>Symptom, cause and fix</caption>
+<thead><tr><th scope="col">Symptom</th><th scope="col">Cause</th><th scope="col">Fix</th></tr></thead>
+<tbody>
+<tr><td>Fenix window views showed no cabin wall</td><td>A skip filter containing "pane" also matched every "Wall_Panel"</td><td>Skip "window_pane" and glass explicitly, not "pane"</td></tr>
+<tr><td>Fenix wing missing from renders</td><td>Wing XML used a LODS Template with MergeModel tips</td><td>Follow Template and MergeModel</td></tr>
+<tr><td>Fuselage counted as engine</td><td>Its folder name (Function_Exterior_A320_CFM_SL) contained the engine type</td><td>Classify engines by part name (Part_Exterior_CFM / IAE)</td></tr>
+<tr><td>Huge invisible planes and boxes in the cabin</td><td>Fenix rig helpers named Skel_*</td><td>Skip Skel_*</td></tr>
+<tr><td>Window height 30 cm too high (iFly)</td><td>Measured from shades parked above the glass</td><td>Measure the glass in the interior model</td></tr>
+<tr><td>Engine 1.7 m too far forward (iFly)</td><td>Ground safety cones in front of the engines</td><td>Skip cones, covers and chocks</td></tr>
+<tr><td>Every iFly window looked solid</td><td>Fuselage skin with alpha-mask window holes</td><td>Treat masked Max8/Max8200 fuselage skins as see-through</td></tr>
+<tr><td>FlyByWire views "100% wing" offline but blocked in the sim</td><td>Inward-facing window lining counted as airframe</td><td>Class it as a wall. Seat cameras in the gap between lining and hull (about 1.81 to 1.89 m out)</td></tr>
+<tr><td>Right wing missing in FlyByWire renders</td><td>Its triangles face the other way, so culling dropped them</td><td>Mirror the left-side seats to the right</td></tr>
+<tr><td>GoPro well behind the windshield</td><td>The mesh named like the windshield was the side window</td><td>Ray-cast straight ahead from the pilot's eye to find the front pane</td></tr>
+<tr><td>777-300ER over-wing views blocked</td><td>Static closed shades beside door 3</td><td>Count shades as solid where they are modelled closed</td></tr>
+<tr><td>A321 views moved off target</td><td>Doors 2 and 3 leave gaps in the window row</td><td>Accept the nearest window, then check those views in the sim</td></tr>
+<tr><td>Engine-front views sat beside the intake instead of in front of it (777s, A320 family, iFly)</td><td>The seat search rewarded how much engine filled the frame, and the engine looks biggest from beside the intake</td><td>Choose the window by its angle to the inlet axis (50 to 60 degrees) first, then require a clear view</td></tr>
+<tr><td>Engine-front view blank when moved forward, or showing the wall between two windows (PMDG 737, camera 30 cm in)</td><td>Looking 35 degrees or more aft through a small window, the window reveal hides the engine unless the camera is close to the glass</td><td>Sit 8 to 14 cm from the glass for these views and check that some engine is in the middle of the frame</td></tr>
+<tr><td>777-300ER views nudged toward the glass offline faced the wall in the sim</td><td>The sim placed the camera a little differently from the offline model (cause not found). Within a few centimetres of the wall, that decides the view</td><td>Make the last moves toward the glass by hand in the sim, then save with Ctrl+Alt+N</td></tr>
+</tbody>
+</table>
+
+<h2 id="cheatsheet">15. Aircraft notes from this project</h2>
+<table>
+<caption>Eyepoints are in feet from the reference datum (longitudinal, lateral, vertical)</caption>
+<thead><tr><th scope="col">Aircraft</th><th scope="col">View file(s)</th><th scope="col">Eyepoint</th><th scope="col">Notes</th></tr></thead>
+<tbody>
+<tr><td>PMDG 777-200ER, 777F</td><td>PMDG 777-200ER / 777F \presets\pmdg\&lt;preset&gt;\config\cameras.CFG</td><td>82.122316, -1.74, 7.722</td><td>200ER tuned by hand in the sim. Its engine-front views were then moved ahead of door 2 and raised 6 cm by hand on the GE preset, then copied to PW, RR and the 777F. The 777F copies the 200ER.</td></tr>
+<tr><td>PMDG 777-300ER</td><td>PMDG 777-300ER\presets\pmdg\PMDG 777-300ER\config\cameras.CFG</td><td>99.559998, -1.74, 7.722</td><td>Shades closed beside door 3. Alt+3/7 were finished by hand in the sim after an offline nudge toward the glass failed, and Alt+8 was moved by hand to mirror Alt+4. The engine-front views were moved 4.8 m ahead of the intake, then raised 4 cm by hand.</td></tr>
+<tr><td>PMDG 737-700 / 800 / 900</td><td>PMDG 737-&lt;type&gt;\presets\pmdg\&lt;preset&gt;\config\cameras.CFG (29 presets)</td><td>37.312 / 47.075 / 52.139, -1.660, 3.909</td><td>-700 cockpit attaches with offset 0,0,-3.0. Freighters have no cabin windows. The first build put the cabin cameras 30 cm in from the glass; the engine-front views need 8 cm. The BBJ's left side has no window in the 50 to 60 degree band.</td></tr>
+<tr><td>Fenix A319 / A320 / A321</td><td>FNX_32X\presets\fnx\&lt;preset&gt;\config\cameras.cfg (20 presets)</td><td>38.650528 / 43.920738 / 57.965850, -1.623061, 3.955627</td><td>Model origin is the datum. Parts span two packages.</td></tr>
+<tr><td>FlyByWire A32NX</td><td>FlyByWire_A320_NEO\cameras.CFG</td><td>43.72074, -1.723061, 4.355627</td><td>No cabin model; windows painted on; HublotIn lining. The engines have SOUND_ENGINE nodes at the fan.</td></tr>
+<tr><td>iFly 737 MAX 8</td><td>iFly 737-MAX8, -166Seats, -189Seats, -MAX8200 \cameras.CFG</td><td>49.683998, -1.63, 2.1</td><td>Window glass at y about 0.47 and 1.82 m out. Its model.cfg says not to show the exterior in interior views, but the wing does show from the cabin in the sim, so load both models for checks.</td></tr>
+</tbody>
+</table>
+
+<h2 id="scripts">16. The reference scripts</h2>
+<p>The folder <code>Reference scripts</code> holds the Python used here, as it ran. Paths point at this PC's install (<code>D:\MSFS2024 Community\Community</code> and the Steam user folder), so adjust them first. See <code>README.txt</code> in that folder for what each does.</p>
+</main>
+</body>
+</html>

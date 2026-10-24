@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Changelog</title>
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; line-height: 1.6; max-width: 60rem; margin: 2rem auto; padding: 0 1rem; color: #1b1b1b; background: #fff; }
+  table { border-collapse: collapse; margin: 0.6rem 0 1.4rem; width: 100%; }
+  th, td { border: 1px solid #999; padding: 0.4rem 0.6rem; text-align: left; vertical-align: top; }
+  th { background: #eee; }
+  caption { text-align: left; font-weight: bold; padding-bottom: 0.3rem; }
+  h2 { margin-top: 2.2rem; border-bottom: 1px solid #ccc; }
+  code { background: #f2f2f2; padding: 0 0.2rem; }
+</style>
+</head>
+<body>
+<main>
+<h1>Changelog</h1>
+<p>This is what changed after the first version of these views, and why.</p>
+
+<h2 id="short">In short</h2>
+<ul>
+<li>The engine-front views (Alt+1 and Alt+5) were moved on every aircraft so they now sit properly in front of the engine.</li>
+<li>All the other views were reviewed and stayed where they were. They were already in the right spots.</li>
+<li>The new views were checked in the sim on every aircraft except the A319 and the 777F, which use the same seats as aircraft that were checked.</li>
+<li>The documents were updated to match.</li>
+</ul>
+
+<h2 id="why">Why the engine-front views moved</h2>
+<p>The engine-front view is meant to put the listener a few rows ahead of the engine, looking back into the intake. That's where the fan whine and the "buzzsaw" sound on takeoff come through best.</p>
+<p>In the first version, most of these views ended up too far back. On the 777s, the Fenix A319, A320 and A321, the FlyByWire A32NX and the iFly 737 MAX 8, the seat was almost beside the intake instead of in front of it. The program that picked the seats preferred windows where the engine looked biggest, and the engine looks biggest from right beside it.</p>
+<p>The PMDG 737s had a different problem. Their seats were in the right place along the cabin, but the camera sat 30 cm back from the window. From there the view showed mostly the wall between two windows, and the engine only appeared in the next window back.</p>
+<p>All of these views now sit a few rows in front of the engine, right up against the window, looking back into the intake.</p>
+
+<h2 id="changes">What changed on each aircraft</h2>
+<p>Seat numbers are for the left side. The right side uses the matching seat across the aisle.</p>
+<table>
+<caption>Engine-front views (Alt+1 and Alt+5), before and after</caption>
+<thead><tr><th scope="col">Aircraft</th><th scope="col">Before</th><th scope="col">Now</th><th scope="col">Seat</th></tr></thead>
+<tbody>
+<tr><td>Fenix A320</td><td>1.4 m in front of the engine</td><td>3 m in front of the engine</td><td>6A, now 4A</td></tr>
+<tr><td>Fenix A319</td><td>Same as the A320</td><td>Same as the A320</td><td>4A, now 2A</td></tr>
+<tr><td>Fenix A321</td><td>Level with the engine</td><td>3 m in front, at the window just ahead of door 2</td><td>Single-class 11A, now 10A; two-class 8A, now 7A</td></tr>
+<tr><td>FlyByWire A32NX</td><td>0.6 m in front of the engine</td><td>3.3 m in front of the engine</td><td>7A, now 3A</td></tr>
+<tr><td>PMDG 777-200ER (PW, GE and RR)</td><td>Level with the engine</td><td>4.8 m in front, at the window just ahead of door 2</td><td>14A, now 10A</td></tr>
+<tr><td>PMDG 777-300ER</td><td>Level with the engine</td><td>4.8 m in front of the engine</td><td>17A, now 13A</td></tr>
+<tr><td>PMDG 777F</td><td>Level with the engine</td><td>Same as the 777-200ER</td><td>No seats (cargo deck)</td></tr>
+<tr><td>iFly 737 MAX 8</td><td>1 m in front of the engine</td><td>2.7 m in front of the engine</td><td>189-seat 9A, now 7A; 178-seat 8A, now 5A; 166-seat 7A, now 5A; MAX 8200 8A, now 6A</td></tr>
+<tr><td>PMDG 737-800</td><td>3.1 m in front, but 30 cm back from the window</td><td>2.6 m in front, right up against the window</td><td>Single-class 6A, now 7A; two-class 5A, now 6A</td></tr>
+<tr><td>PMDG 737-900 and 900ER</td><td>3.1 m in front, but 30 cm back from the window</td><td>2.6 m in front, right up against the window</td><td>900ER single-class 8A, now 9A; 900 two-class 7A, now 8A</td></tr>
+<tr><td>PMDG 737-700</td><td>3.2 to 3.8 m in front, 15 to 30 cm back from the window</td><td>2.2 to 2.7 m in front, right up against the window</td><td>Single-class 1A, now 3A; two-class 2A, now 3A</td></tr>
+</tbody>
+</table>
+<p>On the 737s the seat number goes up by a row or two. The new seat is a window or two further back, but because it's right at the glass, the engine is finally in view.</p>
+<p>A few notes:</p>
+<ul>
+<li>Every version of each aircraft got the same change. That includes the Fenix CFM and IAE engines and both wingtips, the 777 engine options, and the 737's blended and split scimitar winglets.</li>
+<li>The 737 BBJ's left side has no window far enough forward, so its Alt+1 uses the furthest-forward window it has.</li>
+<li>The 737 freighters and the 777F have no cabin windows. The 737 freighters were left alone, and the 777F simply copies the 777-200ER for sound.</li>
+</ul>
+
+<h2 id="handtune">Fine-tuning in the sim</h2>
+<p>On the two 777s the engine sat right at the edge of what the window shows. Both engine-front views were raised slightly by hand in the sim, 4 cm on the 777-300ER and 6 cm on the 777-200ER, so more of the intake and fan shows. The 777-200ER change was then copied to its other two engine versions and to the 777F.</p>
+<p>On the 777-300ER, the right behind-the-wing view (Alt+8) showed mostly ground, with only a thin strip of wing. It was moved one window forward and tilted a little further down, so it now mirrors the left one (Alt+4). With the flaps out, both now show the flaps and the whole wing from behind. The seat stays 38K.</p>
+
+<h2 id="kept">What stayed the same, and why</h2>
+<ul>
+<li><strong>Over the wing (Alt+2/6):</strong> these were already the closest seats to the slats, the flap motor, the air conditioning and, on the Airbuses, the "barking dog" hydraulic pump.</li>
+<li><strong>Wing (Alt+3/7):</strong> these were already over the flaps and the main landing gear, where real airliners keep their hydraulic pumps. On the 737 the hydraulic pump sounds play right below these seats. On the 777 they sit next to where the hydraulic whine was found loudest by ear.</li>
+<li><strong>Behind the wing (Alt+4/8):</strong> these were already well inside each engine's rear sound. In a real aircraft the jet roar is loudest a few rows further back, but these add-ons play the roar from the engine itself, so moving back would mostly just make it quieter.</li>
+<li><strong>Pilot seat and windshield (Alt+9 and Alt+0):</strong> unchanged.</li>
+</ul>
+
+<h2 id="sound">What to expect when listening</h2>
+<ul>
+<li>From the new engine-front seats the engine may sound a little quieter, because the seat is further from where the sound is played. It also arrives from behind and to the side, as it would on a real flight.</li>
+<li>For the loudest engine sound, use the over-wing views, Alt+2 and Alt+6.</li>
+<li>The old positions were kept on file, so any aircraft can be put back the way it was.</li>
+</ul>
+
+<h2 id="research">What the research found</h2>
+<p>The review was based on published measurements and on each aircraft's own sound files:</p>
+<ul>
+<li><strong>Fan whine and buzzsaw</strong> come out of the front of the engine. They're loudest at an angle in front of it and much weaker straight out to the side. Sources: NASA's fan-noise method (Heidmann, NASA TM X-71763), and Boeing and Rolls-Royce measurements of buzzsaw in a 777's forward cabin.</li>
+<li><strong>Jet roar</strong> is loudest behind the wing, in the rear cabin: around rows 20 to 28 on a 180-seat A320 (DLR flight tests, AIAA 2013-2030).</li>
+<li><strong>Window seats</strong> are about 4 dB louder than middle and aisle seats (A321 cabin measurements, Canadian Acoustics, 2006).</li>
+<li><strong>Hydraulic pumps</strong> sit in or next to the main landing gear bay on the A320, 737 and 777 (NTSB report DCA12IA096, FAA AD 99-26-21 and an FAA 777 pump directive).</li>
+<li><strong>The 3D models are accurate.</strong> They match Airbus's and Boeing's own airport-planning documents to within 0.1 to 0.4 m.</li>
+<li><strong>Passenger seat maps</strong> put the classic "engine view" a few rows ahead of the intake, which matches the new seats. These are traveller reports, not measurements.</li>
+<li><strong>Each aircraft's sound files</strong> show where its sounds actually play from:
+  <ul>
+  <li>The Fenix plays each engine from a single point in the middle of the engine.</li>
+  <li>The FlyByWire and the iFly play each engine from its fan, with separate front and rear sounds.</li>
+  <li>The iFly's hydraulic and flap sounds play from the middle of the aircraft, over the wing.</li>
+  <li>The 737 sound pack plays its hydraulic pumps right under the wing views.</li>
+  </ul></li>
+</ul>
+
+<h2 id="docs">Other updates</h2>
+<ul>
+<li><strong>What each view is:</strong> clearer descriptions, a new "Why these seats" section, and the new seat numbers.</li>
+<li><strong>How to build sound views from scratch:</strong>
+  <ul>
+  <li>the new rule for placing the engine-front view;</li>
+  <li>how to measure the engine;</li>
+  <li>where each aircraft plays its sounds;</li>
+  <li>a new section on checking the layout against real aircraft;</li>
+  <li>tips for fine-tuning views by hand;</li>
+  <li>more pitfalls to avoid.</li>
+  </ul></li>
+<li><strong>Seat numbers:</strong> a small fix in how seats across the cabin are counted. It had briefly mislabelled the 777-300ER's right window seats.</li>
+<li><strong>Reference scripts:</strong> new tools for the engine-front search, for choosing and writing the new seats, and for reading where an aircraft plays its sounds.</li>
+</ul>
+
+<h2 id="earlier">One more change, made just before the review</h2>
+<p>On the 777-300ER, the wing views (Alt+3 and Alt+7) were moved 16 to 20 cm closer to their windows and turned toward the glass, so more of the wing shows. They're now listed as seats 33A and 33K instead of 34A and 34K.</p>
+</main>
+</body>
+</html>
