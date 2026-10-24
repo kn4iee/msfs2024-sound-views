@@ -2,6 +2,9 @@
 __pycache__/
 *.pyc
 
+# Backup copies of view files
+*.before-sound-views
+
 # Windows
 Thumbs.db
 desktop.ini

@@ -1,7 +1,8 @@
 # MSFS Sound Views
 
 Custom cabin camera views for Microsoft Flight Simulator 2024, picked for how they sound.
-They cover the PMDG 777 and 737, the Fenix A319, A320 and A321, the FlyByWire A32NX and the iFly 737 MAX 8.
+They cover the PMDG 777 and 737 (including the 737-600), the Fenix A319, A320 and A321, the FlyByWire A32NX,
+the iFly 737 MAX 8 and the TFDi MD-11 and MD-11F.
 
 ## Guides
 
@@ -19,7 +20,11 @@ The same guides are in the download as HTML files, so they also open offline.
 
 ## What's inside
 
-- **Views**: the 59 view files. To install them, copy the folders inside Views into
+- **Views**: the 69 view files. To install them, copy the folders inside Views into
   `%APPDATA%\Microsoft Flight Simulator 2024\SimObjects\Airplanes` (Steam version of the sim).
 - **1 - What each view is.html**, **2 - How to build sound views from scratch.html** and **3 - Changelog.html**: the three guides above.
 - **Reference scripts**: the Python scripts used to build the views.
+
+## Credits
+
+- PMDG 737-600 and TFDi MD-11 / MD-11F views by wolfman1360.

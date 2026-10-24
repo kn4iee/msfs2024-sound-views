@@ -17,7 +17,7 @@
 <body>
 <main>
 <h1>Building sound-tuned camera views from scratch</h1>
-<p>This is the full method used to give PMDG 777 and 737, Fenix A319, A320 and A321, FlyByWire A32NX and iFly 737 MAX 8 aircraft in Microsoft Flight Simulator 2024 a set of custom cabin views chosen for how they sound. It is written so the method can be repeated on any airliner. What changed after the first build, and why, is in <code>3 - Changelog.html</code>.</p>
+<p>This is the full method used to give PMDG 777 and 737, Fenix A319, A320 and A321, FlyByWire A32NX and iFly 737 MAX 8 aircraft in Microsoft Flight Simulator 2024 a set of custom cabin views chosen for how they sound. It is written so the method can be repeated on any airliner. Views for the PMDG 737-600 and the TFDi MD-11 and MD-11F were made by wolfman1360 and added later; section 15 notes how each was checked. What changed after the first build, and why, is in <code>3 - Changelog.html</code>.</p>
 
 <h2 id="idea">1. The idea</h2>
 <p>In MSFS the camera is the listener. Where the camera sits and which way it faces decides how loud each sound is and which ear it lands in. So a view built for sound is a seat: put the camera at a cabin window close to the part that makes the noise, facing the way a passenger would look at it.</p>
@@ -108,7 +108,8 @@
   <li>Fenix: one engine point mid-nacelle; PTU and packs at the datum, over the wing box; slats beside the over-wing view; flaps and main gear under the wing view.</li>
   <li>FlyByWire: each engine at its fan, with separate front and rear layers. The PTU and electric pumps sit 1.8 m behind the datum, the slats on the right side only, and the flap motor beside the left behind-the-wing seat.</li>
   <li>iFly: each engine at its fan, with front and rear layers.</li>
-  <li>Boris Audio Works 737: electric hydraulic pumps under the wing views; flaps with no node, so they play at the datum.</li>
+  <li>Boris Audio Works 737 (the same files on the 737-600 and 737-700): electric hydraulic pumps under the wing views; flaps with no node, so they play at the datum.</li>
+  <li>TFDi MD-11 (Echo19 Audio sounds, plus the aek sound MD-11 pack where installed): each wing engine at one point at the back of the engine, about 8.4 m out from the centreline; the tail engine and the APU in the tail. The hydraulic pumps, flaps, gear and touchdowns have no node, so they play at the datum, on the centreline about 3 m behind the over-wing seats. The packs play at the forward door.</li>
   </ul></li>
 </ul>
 
@@ -247,6 +248,8 @@ Night is fine for this.</li>
 <tr><td>Fenix A319 / A320 / A321</td><td>FNX_32X\presets\fnx\&lt;preset&gt;\config\cameras.cfg (20 presets)</td><td>38.650528 / 43.920738 / 57.965850, -1.623061, 3.955627</td><td>Model origin is the datum. Parts span two packages.</td></tr>
 <tr><td>FlyByWire A32NX</td><td>FlyByWire_A320_NEO\cameras.CFG</td><td>43.72074, -1.723061, 4.355627</td><td>No cabin model; windows painted on; HublotIn lining. The engines have SOUND_ENGINE nodes at the fan.</td></tr>
 <tr><td>iFly 737 MAX 8</td><td>iFly 737-MAX8, -166Seats, -189Seats, -MAX8200 \cameras.CFG</td><td>49.683998, -1.63, 2.1</td><td>Window glass at y about 0.47 and 1.82 m out. Its model.cfg says not to show the exterior in interior views, but the wing does show from the cabin in the sim, so load both models for checks.</td></tr>
+<tr><td>PMDG 737-600</td><td>PMDG 737-600\presets\pmdg\PMDG 737-600 SC / TC\config\cameras.CFG</td><td>Not measured here (the aircraft isn't installed on this PC)</td><td>Views by wolfman1360, who checked them in the sim. The cabin views are the 737-700 SC seats moved 1.37 m forward of the pilot with the wing, which matches the 54 in (1.37 m) Boeing removed ahead of the wing; SC and TC share one set of views. Alt+1 faces 146&deg;, further back than on the other PMDG 737s. Seat numbers were worked out from the 737-700's measured rows.</td></tr>
+<tr><td>TFDi MD-11, MD-11F</td><td>TFDi_Design_MD-11\presets\tfdi-design\&lt;preset&gt;\config\cameras.CFG (8 presets)</td><td>69.0, -2.20, 1.4</td><td>Views by wolfman1360. One model per preset, with the engines merged in by MergeModel; model origin is the datum. The eyepoint sits 4.7 m behind the pilot's camera. The freighter has two cabin windows per side, used by Alt+2/3/6/7; the other cabin views have no window and are for sound only. Checked offline against the MD-11F model (ray cast, GoPro 12.4 cm inside the windshield). The passenger presets copy the freighter's file; the passenger cabin isn't installed here.</td></tr>
 </tbody>
 </table>
 
