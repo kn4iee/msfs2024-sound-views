@@ -14,6 +14,7 @@ fnxcheck.py: Fenix model assembly (two packages, attach nodes, Template/MergeMod
 genfnx.py: Fenix seat search and file writer (one search per cabin layout, copied to engine/wingtip twins).
 genviews.py: Shared seat search used for the single-model aircraft.
 genclassic.py: iFly and FlyByWire adapters (windows, engines, masked skins, window lining) and writer.
+gen757.py: BlueBird 757-200 adapter and writer: datum offset, windows, engines, wing root, one scene load per run, engine-front pick, seat rows (both sides paired), twins (winglets, four-door, no cabin).
 wsray.py: Finds the front windshield by ray casting straight ahead from the pilot's eye.
 fixgopro.py: Moves only the GoPro block to 12 cm inside the windshield.
 fbwmirror.py: Mirrors FlyByWire left-side seats to the right and checks them.

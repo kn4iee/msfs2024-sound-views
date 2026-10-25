@@ -1,6 +1,6 @@
 # What each view is
 
-These are custom cabin camera views for Microsoft Flight Simulator 2024, picked for how they sound rather than how they look. In the sim the camera is also the listener, so each view is a window seat placed next to a part of the aircraft that makes an interesting noise. The set has 69 view files. [3 - Changelog.md](3%20-%20Changelog.md) explains what changed since the first version.
+These are custom cabin camera views for Microsoft Flight Simulator 2024, picked for how they sound rather than how they look. In the sim the camera is also the listener, so each view is a window seat placed next to a part of the aircraft that makes an interesting noise. The set has 79 view files. [3 - Changelog.md](3%20-%20Changelog.md) explains what changed since the first version.
 
 ## The ten views
 
@@ -59,6 +59,7 @@ Jump to an aircraft:
 - [iFly 737 MAX 8](#ifly-737-max-8)
 - [TFDi MD-11F](#tfdi-md-11f)
 - [TFDi MD-11](#tfdi-md-11)
+- [BlueBird 757-200](#bluebird-757-200)
 
 ## PMDG 777-200ER
 
@@ -620,3 +621,96 @@ Jump to an aircraft:
 | Alt+8 | Behind the wing (right) | about 9 m behind door 3, midway to door 4 | 35.7 m behind the pilot, 2.43 m out from the centreline | 65° right of the nose, 12° down |
 | Alt+9 | Pilot seat | Captain's seat | The pilot's seat | straight ahead, 2° up |
 | Alt+0 | Windshield GoPro | Cockpit, at the windshield | 0.77 m ahead of the pilot's eye, 0.25 m left of centre | straight ahead, 8° down |
+
+## BlueBird 757-200
+
+**Status:** Checked in the sim. All ten views were checked on the Rolls-Royce version without winglets, with the flaps run out to 30 and the speedbrake raised to see what each seat shows; five were checked on the Rolls-Royce four-door version, four on the Pratt & Whitney (both engine-front views among them) and three on the Pratt & Whitney with no cabin. That version's views look the same as the others: it keeps the window frames, just not the seats. The engine-front views can't quite sit at the usual angle on this aircraft. Its engines hang so far forward and out from the wing that the best spot, 50 to 60° off the engine's axis, falls mostly on door 2. So they use the first window ahead of door 2 instead and look back into the intake: about 46° (left) and 49° (right) off the axis on the Rolls-Royce, and 48° and 51° on the Pratt & Whitney, whose intake is 0.3 m further forward. The wingtip doesn't change any seat (the winglets just show at the end of the wing), and the four-door cabin's extra door is behind every view, so its seats are the same; only the row numbers change. A livery uses the views of the version it's painted on: the American Airlines N648AA livery, for example, is the Rolls-Royce without winglets.
+
+**Seats:** counted from BlueBird's cabin: four rows of first class, then economy. In the four-door cabin, row 5 has seats on the right side only, beside door 2. Airlines number their 757s differently (American's, for example, has first class in rows 1 to 6 and skips rows 7 and 8), so a real ticket may be a few rows off.
+
+**Sound:** BlueBird's own sound set, the same on every version. Each engine plays from its intake, with separate front and rear sounds, so Alt+2/6 are the closest seats to the engines. The left and right electric hydraulic pumps play from the wheel wells, right under Alt+3/7; the two centre pumps play about 4 m further back, closest to Alt+4/8, and the flap motors between them. BlueBird's flaps, slats, gear and liftoff sounds have no position in its sound file, so the sim plays them from the aircraft's reference point, about 4 m ahead of the nose; no cabin seat is especially close to them. The cabin air, cabin wind, ground roll and passenger sounds play from the cockpit door, aimed down the cabin, so they come from the front. Alt+9 and Alt+0 are cockpit views and hear the cockpit as normal. Not yet checked by ear: BlueBird's sound file spells the engine and hydraulic pump positions with different capital letters from its 3D model. Listen to Alt+1 and Alt+5: each engine should be loudest on its own side.
+
+### Set 1 of 5
+
+**Applies to: bbs-757-200-rr (RR with winglets), bbs-757-200-rr-nw (RR without winglets), bbs-757-200-rr-scimitarw (RR with split scimitar winglets)**
+
+| Key | View | Seat | Where it sits | Facing |
+| --- | --- | --- | --- | --- |
+| Alt+1 | Engine front (left) | 4A | 9.1 m behind the pilot, 1.77 m out from the centreline | 131° left of the nose, 14° down |
+| Alt+2 | Over the wing (left) | 9A | 16.7 m behind the pilot, 1.75 m out from the centreline | 100° left of the nose, 14° down |
+| Alt+3 | Wing (left) | 14A | 20.8 m behind the pilot, 1.69 m out from the centreline | 78° left of the nose, 13° down |
+| Alt+4 | Behind the wing (left) | 20A | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° left of the nose, 12° down |
+| Alt+5 | Engine front (right) | 4F | 9.6 m behind the pilot, 1.77 m out from the centreline | 128° right of the nose, 20° down |
+| Alt+6 | Over the wing (right) | 9F | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° right of the nose, 14° down |
+| Alt+7 | Wing (right) | 14F | 20.8 m behind the pilot, 1.69 m out from the centreline | 86° right of the nose, 13° down |
+| Alt+8 | Behind the wing (right) | 20F | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° right of the nose, 12° down |
+| Alt+9 | Pilot seat | Captain's seat | The pilot's seat | straight ahead, 16° down |
+| Alt+0 | Windshield GoPro | Cockpit, at the windshield | 0.60 m ahead of the pilot's eye, 0.25 m left of centre | straight ahead, 8° down |
+
+### Set 2 of 5
+
+**Applies to: bbs-757-200-rr-AWE (RR four-door with winglets), bbs-757-200-rr-nw-AWE (RR four-door without winglets)**
+
+| Key | View | Seat | Where it sits | Facing |
+| --- | --- | --- | --- | --- |
+| Alt+1 | Engine front (left) | 4A | 9.1 m behind the pilot, 1.77 m out from the centreline | 131° left of the nose, 14° down |
+| Alt+2 | Over the wing (left) | 10A | 16.7 m behind the pilot, 1.75 m out from the centreline | 100° left of the nose, 14° down |
+| Alt+3 | Wing (left) | 15A | 20.8 m behind the pilot, 1.69 m out from the centreline | 78° left of the nose, 13° down |
+| Alt+4 | Behind the wing (left) | 21A | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° left of the nose, 12° down |
+| Alt+5 | Engine front (right) | 4F | 9.6 m behind the pilot, 1.77 m out from the centreline | 128° right of the nose, 20° down |
+| Alt+6 | Over the wing (right) | 10F | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° right of the nose, 14° down |
+| Alt+7 | Wing (right) | 15F | 20.8 m behind the pilot, 1.69 m out from the centreline | 86° right of the nose, 13° down |
+| Alt+8 | Behind the wing (right) | 21F | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° right of the nose, 12° down |
+| Alt+9 | Pilot seat | Captain's seat | The pilot's seat | straight ahead, 16° down |
+| Alt+0 | Windshield GoPro | Cockpit, at the windshield | 0.60 m ahead of the pilot's eye, 0.25 m left of centre | straight ahead, 8° down |
+
+### Set 3 of 5
+
+**Applies to: bbs-757-200-pw (PW with winglets), bbs-757-200-pw-nw (PW without winglets)**
+
+| Key | View | Seat | Where it sits | Facing |
+| --- | --- | --- | --- | --- |
+| Alt+1 | Engine front (left) | 4A | 9.1 m behind the pilot, 1.77 m out from the centreline | 129° left of the nose, 15° down |
+| Alt+2 | Over the wing (left) | 9A | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° left of the nose, 14° down |
+| Alt+3 | Wing (left) | 14A | 20.8 m behind the pilot, 1.69 m out from the centreline | 78° left of the nose, 13° down |
+| Alt+4 | Behind the wing (left) | 20A | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° left of the nose, 12° down |
+| Alt+5 | Engine front (right) | 4F | 9.6 m behind the pilot, 1.77 m out from the centreline | 126° right of the nose, 16° down |
+| Alt+6 | Over the wing (right) | 9F | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° right of the nose, 14° down |
+| Alt+7 | Wing (right) | 14F | 20.8 m behind the pilot, 1.75 m out from the centreline | 86° right of the nose, 13° down |
+| Alt+8 | Behind the wing (right) | 20F | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° right of the nose, 12° down |
+| Alt+9 | Pilot seat | Captain's seat | The pilot's seat | straight ahead, 16° down |
+| Alt+0 | Windshield GoPro | Cockpit, at the windshield | 0.60 m ahead of the pilot's eye, 0.25 m left of centre | straight ahead, 8° down |
+
+### Set 4 of 5
+
+**Applies to: bbs-757-200-pw-AWE (PW four-door with winglets), bbs-757-200-pw-nw-AWE (PW four-door without winglets)**
+
+| Key | View | Seat | Where it sits | Facing |
+| --- | --- | --- | --- | --- |
+| Alt+1 | Engine front (left) | 4A | 9.1 m behind the pilot, 1.77 m out from the centreline | 129° left of the nose, 15° down |
+| Alt+2 | Over the wing (left) | 10A | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° left of the nose, 14° down |
+| Alt+3 | Wing (left) | 15A | 20.8 m behind the pilot, 1.69 m out from the centreline | 78° left of the nose, 13° down |
+| Alt+4 | Behind the wing (left) | 21A | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° left of the nose, 12° down |
+| Alt+5 | Engine front (right) | 4F | 9.6 m behind the pilot, 1.77 m out from the centreline | 126° right of the nose, 16° down |
+| Alt+6 | Over the wing (right) | 10F | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° right of the nose, 14° down |
+| Alt+7 | Wing (right) | 15F | 20.8 m behind the pilot, 1.75 m out from the centreline | 86° right of the nose, 13° down |
+| Alt+8 | Behind the wing (right) | 21F | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° right of the nose, 12° down |
+| Alt+9 | Pilot seat | Captain's seat | The pilot's seat | straight ahead, 16° down |
+| Alt+0 | Windshield GoPro | Cockpit, at the windshield | 0.60 m ahead of the pilot's eye, 0.25 m left of centre | straight ahead, 8° down |
+
+### Set 5 of 5
+
+**Applies to: bbs-757-200-pw-NC (PW with no cabin)**
+
+| Key | View | Seat | Where it sits | Facing |
+| --- | --- | --- | --- | --- |
+| Alt+1 | Engine front (left) | no seats (no cabin) | 9.1 m behind the pilot, 1.77 m out from the centreline | 129° left of the nose, 15° down |
+| Alt+2 | Over the wing (left) | no seats (no cabin) | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° left of the nose, 14° down |
+| Alt+3 | Wing (left) | no seats (no cabin) | 20.8 m behind the pilot, 1.69 m out from the centreline | 78° left of the nose, 13° down |
+| Alt+4 | Behind the wing (left) | no seats (no cabin) | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° left of the nose, 12° down |
+| Alt+5 | Engine front (right) | no seats (no cabin) | 9.6 m behind the pilot, 1.77 m out from the centreline | 126° right of the nose, 16° down |
+| Alt+6 | Over the wing (right) | no seats (no cabin) | 16.7 m behind the pilot, 1.69 m out from the centreline | 100° right of the nose, 14° down |
+| Alt+7 | Wing (right) | no seats (no cabin) | 20.8 m behind the pilot, 1.75 m out from the centreline | 86° right of the nose, 13° down |
+| Alt+8 | Behind the wing (right) | no seats (no cabin) | 25.9 m behind the pilot, 1.75 m out from the centreline | 68° right of the nose, 12° down |
+| Alt+9 | Pilot seat | Captain's seat | The pilot's seat | straight ahead, 16° down |
+| Alt+0 | Windshield GoPro | Cockpit, at the windshield | 0.60 m ahead of the pilot's eye, 0.25 m left of centre | straight ahead, 8° down |

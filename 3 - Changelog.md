@@ -2,6 +2,17 @@
 
 This is what changed after the first version of these views, and why. The newest change is first.
 
+## Added: BlueBird 757-200 (25 October 2026)
+
+Views for the BlueBird Simulations 757-200 were added: one file for each of its ten versions, so the set now has 79 view files. They use the same ten keys as every other aircraft.
+
+- **Checked in the sim:** all ten views on the Rolls-Royce version without winglets, with the flaps run out to 30 and the speedbrake raised, and three to five views each on the Rolls-Royce four-door, the Pratt & Whitney and the Pratt & Whitney with no cabin.
+- **Versions:** Pratt & Whitney and Rolls-Royce engines, with and without winglets, the Rolls-Royce with split scimitar winglets, the four-door cabins ("AWE"), and the Pratt & Whitney with no cabin. The wingtip doesn't change any seat. The four-door cabin's third door is further back than any view, so it uses the same seats as the standard cabin; only its row numbers differ.
+- **Engine-front views:** on the 757 the usual angle in front of the engine falls mostly on door 2, so these views use the first window ahead of it, 46 to 51° off the engine's axis, looking back into the intake.
+- **Where the sounds are:** each engine plays from its intake, with separate front and rear sounds. The electric hydraulic pumps play from the wheel wells, under the wing views. BlueBird's flaps, slats and gear sounds have no position, so they play from the aircraft's reference point, which on this aircraft is about 4 m ahead of the nose.
+- **Checked against Boeing's 757 airport-planning document:** BlueBird's doors match it to 1 cm and the engines to 0.25 m.
+- Documents: a new section in [1 - What each view is.md](1%20-%20What%20each%20view%20is.md), and the 757's sound sources, frame of reference and pitfalls in [2 - How to build sound views from scratch.md](2%20-%20How%20to%20build%20sound%20views%20from%20scratch.md). The script that built them is `Reference scripts\gen757.py`.
+
 ## Guides are now Markdown
 
 The three guides were converted from HTML pages to Markdown (`.md`) files, so GitHub shows them as formatted pages. In the download they open in any text editor. Their content didn't change.

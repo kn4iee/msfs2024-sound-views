@@ -2,7 +2,7 @@
 
 Custom cabin camera views for Microsoft Flight Simulator 2024, picked for how they sound.
 They cover the PMDG 777 and 737 (including the 737-600), the Fenix A319, A320 and A321, the FlyByWire A32NX,
-the iFly 737 MAX 8 and the TFDi MD-11 and MD-11F.
+the iFly 737 MAX 8, the TFDi MD-11 and MD-11F and the BlueBird 757-200.
 
 ## Guides
 
@@ -18,7 +18,7 @@ The guides are Markdown files, so GitHub shows them as formatted pages. In the d
 
 ## What's inside
 
-- **Views**: the 69 view files. To install them, copy the folders inside Views into
+- **Views**: the 79 view files. To install them, copy the folders inside Views into
   `%APPDATA%\Microsoft Flight Simulator 2024\SimObjects\Airplanes` (Steam version of the sim).
 - **1 - What each view is.md**, **2 - How to build sound views from scratch.md** and **3 - Changelog.md**: the three guides above.
 - **Reference scripts**: the Python scripts used to build the views.
